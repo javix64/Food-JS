@@ -48,3 +48,8 @@ h2{
 p{
     text-align: left;
 }
+.secH2{
+    background-color: #9E922A;
+    padding-top:20px;
+    padding-bottom: 20px;
+}

@@ -1,11 +1,15 @@
+//arr addEventListener;
+let arrListener=[];
+const arrSection=['paleo','vegan','low-sugar','search'];
 function main(){  
-  const urlPaleo = 'https://api.edamam.com/search?q=chicken&app_id=cc72277f&app_key=fd7b3902835e935b09f511a64f8c7068&Health=paleo';
+  const urlPaleo = 'https://api.edamam.com/search?q=chicken&app_id=cc72277f&app_key=fd7b3902835e935b09f511a64f8c7068&Health=paleo&p=2';
   const urlVegan = 'https://api.edamam.com/search?q=broccoli&app_id=cc72277f&app_key=fd7b3902835e935b09f511a64f8c7068&Health=vegan';
   const urlLowSugar= 'https://api.edamam.com/search?q=tomato&app_id=cc72277f&app_key=fd7b3902835e935b09f511a64f8c7068&Health=low-sugar';
   const arrUrl=[urlPaleo,urlVegan,urlLowSugar];
-  const arrSection=['paleo','vegan','low-sugar']
-  for (let i = 0; i < 3; i++) {
-    const requestAll = new Request(arrUrl[i],{method: 'GET'});
+  
+  for (let j = 0; j < 1; j++) {
+  //for (let j = 0; j < 3; j++) {
+    const requestAll = new Request(arrUrl[j],{method: 'GET'});
     fetch(requestAll)
     .then( response => response.json() )
     .then( data => {
@@ -17,7 +21,9 @@ function main(){
       let ul;
       let li;
       let h2;
-      let section = document.getElementById(arrSection[i]);
+      let id;
+      let buttonClick;
+      let section = document.getElementById(arrSection[j]);
       for (let i = 0; i < hits.length; i++) {
         //creating html
         article = document.createElement('article');
@@ -26,9 +32,11 @@ function main(){
         img = document.createElement('img');
         ul = document.createElement('ul');
         h2 = document.createElement('h2');
+        buttonClick = document.createElement('button');
+        
         //appending data to html
         h2.innerText=hits[i].recipe.label;
-        p.innerText=hits[i].recipe.calories;
+        p.innerText=hits[i].recipe.calories+" Kcal";
         img.setAttribute('src',hits[i].recipe.image);
         a.setAttribute('href',hits[i].recipe.url);
         let ingredients=hits[i].recipe.ingredients.length;
@@ -48,11 +56,23 @@ function main(){
         article.append(ul);
         //append to correctly section.
         section.append(article);
-      }//end then call
-    
-    })
-    .catch( e => console.error( 'Something went wrong' ) );
+        //Setting id for model view.
+        id=arrSection[j]+i;
+        arrListener.push(id);
+        article.append(buttonClick);
+        buttonClick.innerText='Press to watch recipe';
+        buttonClick.setAttribute('id',id.toString());
+        
+      }
 
+      document.getElementById('paleo0').addEventListener('click',function() {modal.style.display = "block";})
+      for (let k = 0; k < 10; k++) {
+        
+      }
+    }//end then call
+      
+    )
+    .catch( e => console.error( 'Something went wrong' ) );
   }
 }//call function main.
 
@@ -81,11 +101,13 @@ function search(param){
       let ul;
       let li;
       let h2;
+      let buttonClick;
       //Writing the search results in the html.
       const header = document.createElement('h2');
       header.innerText = 'Search';
       header.setAttribute('class','secH2');
       const section= document.createElement('section');
+      section.setAttribute('id','search')
       document.getElementsByTagName('main')[0].append(header);
       document.getElementsByTagName('main')[0].append(section);
       for (let i = 0; i < hits.length; i++) {
@@ -96,6 +118,7 @@ function search(param){
         img = document.createElement('img');
         ul = document.createElement('ul');
         h2 = document.createElement('h2');
+        buttonClick = document.createElement('button');
         //appending data to html
         h2.innerText=hits[i].recipe.label;
         p.innerText=hits[i].recipe.calories +" Kcal";
@@ -121,6 +144,10 @@ function search(param){
         article.append(ul);
         //append to correctly section.
         section.append(article);
+        //more information button
+        buttonClick.setAttribute('id','search'+i);
+        article.append(buttonClick);
+        buttonClick.innerText='Press to watch recipe';
       }
     
     })
@@ -128,36 +155,25 @@ function search(param){
 }//end search
 
 
+//tengo que crear tantos eventos por cada receta exista
+//despues asociarle que abra una ventana modal y muestre esa receta
+
+
 // Get the modal
 var modal = document.getElementById("myModal");
-
 // Get the button that opens the modal
 var btn = document.getElementById("myBtn");
 
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
+//open the modal
+btn.onclick = function() {modal.style.display = "block";}
 
-// When the user clicks on the button, open the modal
-btn.onclick = function() {
-  modal.style.display = "block";
-}
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-} 
-
-
-
+//Close modal window
+document.getElementsByClassName("close")[0].onclick = function() {modal.style.display = "none";};
+window.onclick = function(event) {if (event.target == modal) {modal.style.display = "none";}};
+document.addEventListener("keydown", function(event) {if (event.key === "Escape") {modal.style.display="none";}});
 
 //main();
+
 const searchIt=document.getElementsByTagName('input')[0];
 searchIt.addEventListener('keypress',function(e){if(e.key==='Enter'){search(searchIt.value)}});
 const button=document.getElementsByTagName('button')[0];

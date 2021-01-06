@@ -1,8 +1,8 @@
 //arr addEventListener;
 let arrListener=[];
-const arrSection=['paleo','vegan','low-sugar','search'];
+const arrSection=['paleo','vegan','low-sugar'];
 function main(){  
-  const urlPaleo = 'https://api.edamam.com/search?q=chicken&app_id=cc72277f&app_key=fd7b3902835e935b09f511a64f8c7068&Health=paleo&p=2';
+  const urlPaleo = 'https://api.edamam.com/search?q=chicken&app_id=cc72277f&app_key=fd7b3902835e935b09f511a64f8c7068&Health=paleo';
   const urlVegan = 'https://api.edamam.com/search?q=broccoli&app_id=cc72277f&app_key=fd7b3902835e935b09f511a64f8c7068&Health=vegan';
   const urlLowSugar= 'https://api.edamam.com/search?q=tomato&app_id=cc72277f&app_key=fd7b3902835e935b09f511a64f8c7068&Health=low-sugar';
   const arrUrl=[urlPaleo,urlVegan,urlLowSugar];
@@ -63,12 +63,9 @@ function main(){
         buttonClick.innerText='Press to watch recipe';
         buttonClick.setAttribute('id',id.toString());
         
-      }
+      }//finish loop
 
-      document.getElementById('paleo0').addEventListener('click',function() {modal.style.display = "block";})
-      for (let k = 0; k < 10; k++) {
-        
-      }
+      
     }//end then call
       
     )
@@ -124,7 +121,6 @@ function search(param){
         p.innerText=hits[i].recipe.calories +" Kcal";
         img.setAttribute('src',hits[i].recipe.image);
         a.setAttribute('href',hits[i].recipe.url);
-        console.dir(hits[i].recipe)
         let ingredients=hits[i].recipe.ingredients.length;
         let arrIngredients=[];
         for (const j of hits[i].recipe.ingredients) {
@@ -148,8 +144,41 @@ function search(param){
         buttonClick.setAttribute('id','search'+i);
         article.append(buttonClick);
         buttonClick.innerText='Press to watch recipe';
+      }//finish loop
+      
+      //new loop for modals recipes
+      //for every recipe, create a modal
+
+      for (let i = 0; i < 10; i++) {
+        //creating modal
+        let modal=document.createElement('div');
+        modal.setAttribute('class','modal');
+        modal.setAttribute('id','modal-search'+i);
+        let modalContent= document.createElement('div');
+        modalContent.setAttribute('class','modal-content');
+        let close=document.createElement('span');
+        close.setAttribute('class','close');
+        close.innerHTML="&times;";
+
+        let titleRecipe=document.createElement('h2');
+        titleRecipe.innerText=data.hits[i].recipe.label;
+
+        //appending to modal
+        
+        modal.append(modalContent);
+        modalContent.append(close);
+        modalContent.append(titleRecipe);
+        document.body.append(modal);
+
+        //adding events open and close
+        document.getElementById('search'+i).addEventListener('click',function() {document.getElementById('modal-search'+i).style.display = "block";});
+        document.getElementsByClassName("close")[i].onclick = function() {document.getElementById('modal-search'+i).style.display = "none";};
+        window.addEventListener('click',
+        function(e){if(e.target==document.getElementById('modal-search'+i)){document.getElementById('modal-search'+i).style.display='none'}});
+        document.addEventListener("keydown", function(event) {if (event.key === "Escape") {document.getElementById('modal-search'+i).style.display="none";}});
+
       }
-    
+      //creating modals for every recipe;
     })
     .catch( e => console.error( 'Something went wrong' ) );
 }//end search
@@ -159,22 +188,16 @@ function search(param){
 //despues asociarle que abra una ventana modal y muestre esa receta
 
 
-// Get the modal
-var modal = document.getElementById("myModal");
-// Get the button that opens the modal
-var btn = document.getElementById("myBtn");
-
-//open the modal
-btn.onclick = function() {modal.style.display = "block";}
-
-//Close modal window
-document.getElementsByClassName("close")[0].onclick = function() {modal.style.display = "none";};
-window.onclick = function(event) {if (event.target == modal) {modal.style.display = "none";}};
-document.addEventListener("keydown", function(event) {if (event.key === "Escape") {modal.style.display="none";}});
-
 //main();
 
 const searchIt=document.getElementsByTagName('input')[0];
 searchIt.addEventListener('keypress',function(e){if(e.key==='Enter'){search(searchIt.value)}});
 const button=document.getElementsByTagName('button')[0];
-button.addEventListener('click',function(){search(searchIt.value)})
+button.addEventListener('click',function(){search(searchIt.value)});
+
+function prueba(){
+  fetch(new Request('https://api.edamam.com/search?q=chicken&app_id=cc72277f&app_key=fd7b3902835e935b09f511a64f8c7068'))
+  .then(response => response.json())
+  .then(data =>{console.dir(data.hits[0].recipe)});
+}
+prueba();

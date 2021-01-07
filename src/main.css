@@ -36,8 +36,7 @@ section{
     grid-template-columns: 33% 33% 33%;
     grid-template-rows: auto;
     grid-template-areas: 
-    "article article article"
-    ;
+    "article article article";
 }
 article{
     grid-area: "article";
@@ -91,4 +90,49 @@ p{
     color: black;
     text-decoration: none;
     cursor: pointer;
-} 
+}
+
+.container {
+    display: grid;
+    column-gap: 5px;
+    row-gap:5px;
+    grid-template-columns: 50% 16% 16% 16%;
+    grid-template-rows: auto;
+    grid-template-areas: 
+    "h2 h2 h2 h2"
+    "img time calories weight"
+    ". ingredients ingredients ."
+    "diet-labels diet-labels health-labels health-labels"
+    "total-daily total-daily total-nutrients total-nutrients"
+    ;
+}
+img{
+    grid-area:img;
+}
+.container > h2{
+    grid-area: h2;
+}
+p.time{
+    grid-area: time;
+}
+p.calories{
+    grid-area:calories;
+}
+p.weight{
+    grid-area:weight;
+}
+ul.ingredients{
+    grid-area:ingredients;
+}
+div.diet-labels{
+    grid-area:diet-labels;
+}
+div.health-labels{
+    grid-area:health-labels;
+}
+div.total-daily{
+    grid-area:total-daily;
+}
+div.total-nutrients{
+    grid-area:total-nutrients;
+}

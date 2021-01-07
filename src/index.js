@@ -7,8 +7,7 @@ function main(){
   const urlLowSugar= 'https://api.edamam.com/search?q=tomato&app_id=cc72277f&app_key=fd7b3902835e935b09f511a64f8c7068&Health=low-sugar';
   const arrUrl=[urlPaleo,urlVegan,urlLowSugar];
   
-  for (let j = 0; j < 1; j++) {
-  //for (let j = 0; j < 3; j++) {
+  for (let j = 0; j < 3; j++) {
     const requestAll = new Request(arrUrl[j],{method: 'GET'});
     fetch(requestAll)
     .then( response => response.json() )
@@ -36,7 +35,8 @@ function main(){
         
         //appending data to html
         h2.innerText=hits[i].recipe.label;
-        p.innerText=hits[i].recipe.calories+" Kcal";
+        const calories=Math.round(hits[i].recipe.calories * 10)/10;
+        p.innerText=calories +" Kcal";
         img.setAttribute('src',hits[i].recipe.image);
         a.setAttribute('href',hits[i].recipe.url);
         let ingredients=hits[i].recipe.ingredients.length;
@@ -65,6 +65,129 @@ function main(){
         
       }//finish loop
 
+      for (let a = 0; a < 3; a++) {
+        let kind=['modal-paleo','modal-vegan','modal-lowSugar'];
+        
+        for (let i = 0; i < 10; i++) {
+          //creating modal
+          
+          
+          let modal=document.createElement('div');
+          modal.setAttribute('class','modal');
+          
+          modal.setAttribute('id',kind[a]+i);
+          let modalContent= document.createElement('div');
+          modalContent.setAttribute('class','modal-content');
+          let close=document.createElement('span');
+          close.setAttribute('class','close');
+          close.innerHTML="&times;";
+          let container= document.createElement('div');
+          container.setAttribute('class','container');
+  
+          //title
+          let titleRecipe=document.createElement('h2');
+          titleRecipe.innerText=data.hits[i].recipe.label;
+  
+          //image
+          let imageRecipe=document.createElement('img');
+          imageRecipe.setAttribute('src',data.hits[i].recipe.image);
+  
+          // Time, calories, weight
+          let pTime = document.createElement('p');
+          let pCalories = document.createElement('p');
+          let pWeight = document.createElement('p');
+          pTime.innerText="Total time: "+round(data.hits[i].recipe.totalTime);
+          pCalories.innerText="Calories: "+round(data.hits[i].recipe.calories);
+          pWeight.innerText="Weight: " + round(data.hits[i].recipe.totalWeight);
+          
+          //ingredients
+          let liIngredient;
+          let ulIngredients = document.createElement('ul');
+          ulIngredients.setAttribute('class','ingredients');
+          let arrIngredients=[];
+          for (const j of data.hits[i].recipe.ingredients) {
+            arrIngredients.push(j);
+          }
+          let h3Ingredient= document.createElement('h3');
+          h3Ingredient.innerText="Ingredients";
+          ulIngredients.append(h3Ingredient);
+          
+          for (let b = 0; b < arrIngredients.length; b++) {
+            liIngredient = document.createElement('li');
+            liIngredient.innerText=arrIngredients[b].text;
+            ulIngredients.append(liIngredient);
+          }
+  
+          //Diet labels
+          let divDietLabels= document.createElement('div');
+          divDietLabels.setAttribute('class','diet-labels');
+          let liDietLabels;
+          let ulDietLabels = document.createElement('ul');
+          let arrDietLabels=[];
+  
+          for (const j of data.hits[i].recipe.dietLabels) {
+            arrDietLabels.push(j);
+          }        
+          let h3DietLabels= document.createElement('h3');
+          h3DietLabels.innerText="Diet labels";
+          ulDietLabels.append(h3DietLabels);
+  
+          for (let b = 0; b < arrDietLabels.length; b++) {
+            liDietLabels = document.createElement('li');
+            liDietLabels.innerText=arrDietLabels[b];
+            ulDietLabels.append(liDietLabels);
+          }
+  
+          //Health labels;
+          let divHealthLabels= document.createElement('div');
+          divHealthLabels.setAttribute('class','health-labels');
+          let liHealthLabels;
+          let ulHealthLabels = document.createElement('ul');
+          let arrHealthLabels=[];
+  
+          for (const j of data.hits[i].recipe.healthLabels) {
+            arrHealthLabels.push(j);
+          }
+          let h3HealthLabels= document.createElement('h3');
+          h3HealthLabels.innerText="Health labels";
+          ulHealthLabels.append(h3HealthLabels);
+  
+          for (let b = 0; b < arrHealthLabels.length; b++) {
+            liHealthLabels = document.createElement('li');
+            liHealthLabels.innerText=arrHealthLabels[b];
+            ulHealthLabels.append(liHealthLabels);
+          }
+          //appending to modal
+          document.body.append(modal);
+          modal.append(modalContent);
+          modalContent.append(close);
+          modalContent.append(container);
+  
+          container.append(titleRecipe);
+          container.append(imageRecipe);
+          container.append(pTime);
+          container.append(pCalories);
+          container.append(pWeight);
+  
+          container.append(ulIngredients);
+          container.append(ul);
+  
+          divDietLabels.append(ulDietLabels);
+          container.append(divDietLabels);
+  
+          divHealthLabels.append(ulHealthLabels);
+          container.append(divHealthLabels);
+  
+          //adding events open and close
+          document.getElementById(arrSection[a]+i).addEventListener('click',function() {document.getElementById(kind[a]+i).style.display = "block";});
+          document.getElementsByClassName("close")[i].onclick = function() {document.getElementById(kind[a]+i).style.display = "none";};
+          window.addEventListener('click',
+          function(e){if(e.target==document.getElementById(kind[a]+i)){document.getElementById(kind[a]+i).style.display='none'}});
+          document.addEventListener("keydown", function(event) {if (event.key === "Escape") {document.getElementById(kind[a]+i).style.display="none";}});
+  
+        }
+      }
+      
       
     }//end then call
       
@@ -118,7 +241,8 @@ function search(param){
         buttonClick = document.createElement('button');
         //appending data to html
         h2.innerText=hits[i].recipe.label;
-        p.innerText=hits[i].recipe.calories +" Kcal";
+        const calories=Math.round(hits[i].recipe.calories * 10)/10;
+        p.innerText=calories +" Kcal";
         img.setAttribute('src',hits[i].recipe.image);
         a.setAttribute('href',hits[i].recipe.url);
         let ingredients=hits[i].recipe.ingredients.length;
@@ -131,8 +255,6 @@ function search(param){
           li.innerText=arrIngredients[b].text;
           ul.append(li);
         }
-        //crear li con array
-
         article.append(h2);
         article.append(p);
         a.append(img);
@@ -151,6 +273,7 @@ function search(param){
 
       for (let i = 0; i < 10; i++) {
         //creating modal
+        
         let modal=document.createElement('div');
         modal.setAttribute('class','modal');
         modal.setAttribute('id','modal-search'+i);
@@ -159,16 +282,131 @@ function search(param){
         let close=document.createElement('span');
         close.setAttribute('class','close');
         close.innerHTML="&times;";
+        let container= document.createElement('div');
+        container.setAttribute('class','container');
 
+        //title
         let titleRecipe=document.createElement('h2');
         titleRecipe.innerText=data.hits[i].recipe.label;
 
-        //appending to modal
+        //image
+        let imageRecipe=document.createElement('img');
+        imageRecipe.setAttribute('src',data.hits[i].recipe.image);
+
+        // Time, calories, weight
+        let pTime = document.createElement('p');
+        let pCalories = document.createElement('p');
+        let pWeight = document.createElement('p');
+        pTime.innerText="Total time: "+round(data.hits[i].recipe.totalTime);
+        pCalories.innerText="Calories: "+round(data.hits[i].recipe.calories);
+        pWeight.innerText="Weight: " + round(data.hits[i].recipe.totalWeight);
         
+        //ingredients
+        let liIngredient;
+        let ulIngredients = document.createElement('ul');
+        ulIngredients.setAttribute('class','ingredients');
+        let arrIngredients=[];
+        for (const j of data.hits[i].recipe.ingredients) {
+          arrIngredients.push(j);
+        }
+        let h3Ingredient= document.createElement('h3');
+        h3Ingredient.innerText="Ingredients";
+        ulIngredients.append(h3Ingredient);
+        
+        for (let b = 0; b < arrIngredients.length; b++) {
+          liIngredient = document.createElement('li');
+          liIngredient.innerText=arrIngredients[b].text;
+          ulIngredients.append(liIngredient);
+        }
+
+        //Diet labels
+        let divDietLabels= document.createElement('div');
+        divDietLabels.setAttribute('class','diet-labels');
+        let liDietLabels;
+        let ulDietLabels = document.createElement('ul');
+        let arrDietLabels=[];
+
+        for (const j of data.hits[i].recipe.dietLabels) {
+          arrDietLabels.push(j);
+        }        
+        let h3DietLabels= document.createElement('h3');
+        h3DietLabels.innerText="Diet labels";
+        ulDietLabels.append(h3DietLabels);
+
+        for (let b = 0; b < arrDietLabels.length; b++) {
+          liDietLabels = document.createElement('li');
+          liDietLabels.innerText=arrDietLabels[b];
+          ulDietLabels.append(liDietLabels);
+        }
+
+        //Health labels;
+        let divHealthLabels= document.createElement('div');
+        divHealthLabels.setAttribute('class','health-labels');
+        let liHealthLabels;
+        let ulHealthLabels = document.createElement('ul');
+        let arrHealthLabels=[];
+
+        for (const j of data.hits[i].recipe.healthLabels) {
+          arrHealthLabels.push(j);
+        }        
+        let h3HealthLabels= document.createElement('h3');
+        h3HealthLabels.innerText="Health labels";
+        ulHealthLabels.append(h3HealthLabels);
+
+        for (let b = 0; b < arrHealthLabels.length; b++) {
+          liHealthLabels = document.createElement('li');
+          liHealthLabels.innerText=arrHealthLabels[b];
+          ulHealthLabels.append(liHealthLabels);
+        }
+
+        //total Daily and total Nutrients
+        /*
+        let divtotalDaily= document.createElement('div');
+        divtotalDaily.setAttribute('class','total-daily');
+        let litotalDaily;
+        let ultotalDaily = document.createElement('ul');
+        let arrtotalDaily=[];
+        console.log(data.hits[i].recipe.totalDaily[0]);
+        let nutrients= ['ENERC_KCAL', 'SUGAR', 'FAT' ,'FASAT', 'CA', 'MG', 'NA', 'K']
+        let dailyNutrients=[];
+        for (let i = 0; i < nutrients.length; i++) {
+          dailyNutrients.push('data.hits[i].recipe.totalDaily.'+nutrients[i]);
+        }
+        for (const j of dailyNutrients) {
+          arrtotalDaily.push(j);
+        }
+        console.log(arrtotalDaily);
+        let h3totalDaily= document.createElement('h3');
+        h3totalDaily.innerText="Health labels";
+        ultotalDaily.append(h3totalDaily);
+
+        for (let b = 0; b < arrtotalDaily.length; b++) {
+          litotalDaily = document.createElement('li');
+          litotalDaily.innerText=arrtotalDaily[b].label+round(arrtotalDaily[b].quantity)+arrtotalDaily[b].unit;
+          ultotalDaily.append(litotalDaily);
+        }
+          */
+
+        //appending to modal
+        document.body.append(modal);
         modal.append(modalContent);
         modalContent.append(close);
-        modalContent.append(titleRecipe);
-        document.body.append(modal);
+        modalContent.append(container);
+
+        container.append(titleRecipe);
+        container.append(imageRecipe);
+        container.append(pTime);
+        container.append(pCalories);
+        container.append(pWeight);
+
+        container.append(ulIngredients);
+        container.append(ul);
+
+        divDietLabels.append(ulDietLabels);
+        container.append(divDietLabels);
+
+        divHealthLabels.append(ulHealthLabels);
+        container.append(divHealthLabels);
 
         //adding events open and close
         document.getElementById('search'+i).addEventListener('click',function() {document.getElementById('modal-search'+i).style.display = "block";});
@@ -183,21 +421,14 @@ function search(param){
     .catch( e => console.error( 'Something went wrong' ) );
 }//end search
 
+main();
 
-//tengo que crear tantos eventos por cada receta exista
-//despues asociarle que abra una ventana modal y muestre esa receta
-
-
-//main();
+//function to round the decimals.
+function round(p){
+  return Math.round(p * 10)/10;
+}
 
 const searchIt=document.getElementsByTagName('input')[0];
 searchIt.addEventListener('keypress',function(e){if(e.key==='Enter'){search(searchIt.value)}});
 const button=document.getElementsByTagName('button')[0];
 button.addEventListener('click',function(){search(searchIt.value)});
-
-function prueba(){
-  fetch(new Request('https://api.edamam.com/search?q=chicken&app_id=cc72277f&app_key=fd7b3902835e935b09f511a64f8c7068'))
-  .then(response => response.json())
-  .then(data =>{console.dir(data.hits[0].recipe)});
-}
-prueba();

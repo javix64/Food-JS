@@ -2,6 +2,8 @@
 This API project is for eat better than you are doing right now.
 ## The web is: [Food-JS](https://javix64.github.io/Food-JS/)
 
+## Total time with Wakatime
+[Wakatime](https://wakatime.com/@8c413fb3-2356-4d3d-acf6-fbe71e974e55/projects/qonvmrmmwp?start=2021-01-01&end=2021-01-07)
 ## Problems (only Spanish)
 1. Podría haber usado objetos para crear las recetas y me habría ahorrado mucho código
 2. Usar dos bucles, uno para el maquetado de recetas y otro para el modal, ésto no es escalable y consume muchos recursos que se pueden optimizar.
